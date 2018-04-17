@@ -4,7 +4,7 @@ The sensor library is adapted from https://github.com/yanbe/bme280-esp-idf-i2c .
 
 ## Setup
 Make sure to follow the instructions at https://esp-idf.readthedocs.io/en/v2.0/linux-setup.html.
-Also follow installation instructions on the GU-Edgent repo.  There are some default compiler flags that need to be removed for the ESP32.
+There are some default compiler flags that need to be removed to use Glasgow-Microstream on the ESP32.  Namely the -fno-rtti flag should be removed from the CXXFLAGS in esp-idf's make/project.mk file.
 ```
 git clone git@github.com:sbeanie/Glasgow-MicroStream-ESP32-BME280-Example.git
 cd Glasgow-MicroStream-ESP32-BME280-Example
