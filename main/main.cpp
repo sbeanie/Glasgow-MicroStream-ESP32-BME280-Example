@@ -23,7 +23,7 @@ extern "C" {
 
 void connect_wifi();
 
-#define _DEVICE_B_
+#define _DEVICE_A_
 
 #ifdef _DEVICE_A_
 
@@ -69,6 +69,18 @@ optional<double> (*byte_array_to_double) (std::pair<uint32_t, void*>) = [] (std:
 };
 //######################################
 
+
+//######## SERIAL CONSOLE (TTY) PRINTERS ##########
+auto print_tty_temperature_sink = [](double val) {
+	ESP_LOGI(TEMP_STREAM_ID, "Local temperature %.5f °C", val);
+};
+auto print_tty_humidity_sink = [](double val) {
+	ESP_LOGI(HUM_STREAM_ID, "Local humidity %.5f %%", val);
+};
+auto print_tty_pressure_sink = [](double val) {
+	ESP_LOGI(PRES_STREAM_ID, "Local pressure %.5f hPa", val);
+};
+//######################################
 
 //######## THRESHOLD PRINTERS ##########
 auto print_temperature_sink = [](double val) {
@@ -136,6 +148,10 @@ void app_main(void) {
 	Stream<double> *humidity_stream = topology->addPolledSource(std::chrono::seconds(1), humidity_pollable);
 	Stream<double> *temperature_stream =topology->addPolledSource(std::chrono::seconds(1), temperature_pollable);
 	Stream<double> *pressure_stream =topology->addPolledSource(std::chrono::seconds(1), pressure_pollable);
+
+	temperature_stream->sink(print_tty_temperature_sink);
+	humidity_stream->sink(print_tty_humidity_sink);
+	pressure_stream->sink(print_tty_pressure_sink);
 
 	// Let everyone in the network know our sensor readings
 	humidity_stream->networkSink(topology, HUM_STREAM_ID, double_to_bytes);
