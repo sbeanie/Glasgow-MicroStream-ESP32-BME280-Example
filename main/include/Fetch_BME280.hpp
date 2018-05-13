@@ -104,7 +104,7 @@ void task_bme280_normal_mode(void *ignore)
 	struct bme280_t bme280;
 	bme280.bus_write = BME280_I2C_bus_write;
 	bme280.bus_read = BME280_I2C_bus_read;
-	bme280.dev_addr = BME280_I2C_ADDRESS2;
+	bme280.dev_addr = BME280_I2C_ADDRESS1;
 	bme280.delay_msec = BME280_delay_msek;
 
 
