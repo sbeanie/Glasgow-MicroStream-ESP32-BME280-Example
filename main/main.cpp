@@ -71,6 +71,17 @@ optional<double> (*byte_array_to_double) (std::pair<uint32_t, void*>) = [] (std:
 };
 //######################################
 
+//######## SERIAL CONSOLE (TTY) PRINTERS ##########
+auto print_tty_temperature_sink = [](double val) {
+	std::cout << TEMP_STREAM_ID << " Local temperature " << std::setprecision(5) << val << " °C" << std::endl;
+};
+auto print_tty_humidity_sink = [](double val) {
+	std::cout << TEMP_STREAM_ID << " Local humidity " << std::setprecision(5) << val << " %" << std::endl;
+};
+auto print_tty_pressure_sink = [](double val) {
+	std::cout << TEMP_STREAM_ID << " Local pressure " << std::setprecision(5) << val << " hPa" << std::endl;
+};
+//######################################
 
 //######## SERIAL CONSOLE (TTY) PRINTERS ##########
 auto print_tty_temperature_sink = [](double val) {
@@ -86,13 +97,13 @@ auto print_tty_pressure_sink = [](double val) {
 
 //######## THRESHOLD PRINTERS ##########
 auto print_temperature_sink = [](double val) {
-	std::cout << TEMP_STREAM_ID << " Temperature differs by " << std::setprecision(5) << val << " °C";
+	std::cout << TEMP_STREAM_ID << " Temperature differs by " << std::setprecision(5) << val << " °C" << std::endl;
 };
 auto print_humidity_sink = [](double val) {
-	std::cout << TEMP_STREAM_ID << " Humidity differs by " << std::setprecision(5) << val << " %%";
+	std::cout << TEMP_STREAM_ID << " Humidity differs by " << std::setprecision(5) << val << " %" << std::endl;
 };
 auto print_pressure_sink = [](double val) {
-	std::cout << TEMP_STREAM_ID << " Pressure differs by " << std::setprecision(5) << val << " hPa";
+	std::cout << TEMP_STREAM_ID << " Pressure differs by " << std::setprecision(5) << val << " hPa" << std::endl;
 };
 //######################################
 
@@ -138,6 +149,8 @@ void app_main(void) {
 
 	// Use a priority of 10 to prevent preemption. (default Glasgow MicroStream thread has priority 5)
 	//xTaskCreate(&task_bme280_normal_mode, "bme280_normal_mode",  2048, NULL, 10, NULL);
+	open_bme280();
+	std::thread t1(thread_read_bme280);
 
 	BME280_Value_Pollable *humidity_pollable = new BME280_Value_Pollable(&compensated_humidity_double);
 	BME280_Value_Pollable *temperature_pollable = new BME280_Value_Pollable(&compensated_temperature_double);
