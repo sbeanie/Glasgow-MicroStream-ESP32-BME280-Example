@@ -1,0 +1,1 @@
+g++ -std=c++11 -I ../components/bme280/driver -I ../components/GU-Edgent/include -o bme280.rpi main.cpp -lpthread
