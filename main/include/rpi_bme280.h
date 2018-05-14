@@ -11,23 +11,36 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#define I2C_BUS "/dev/i2c-1"
+
 double compensated_temperature_double = 0;
 double compensated_pressure_double = 0; // hPa
 double compensated_humidity_double = 0;
 
-void read_bme280()
-{
+int file;
+
+void read_bme280();
+void thread_read_bme280();
+
+void thread_read_bme280() {
+	while (true) {
+		usleep(1000000);
+		read_bme280();
+	}
+}
+
+void open_bme280() {
 	// Create I2C bus
-	int file;
-	char *bus = "/dev/i2c-1";
-	if((file = open(bus, O_RDWR)) < 0) 
+	if((file = open(I2C_BUS, O_RDWR)) < 0) 
 	{
 		printf("Failed to open the bus. \n");
 		exit(1);
 	}
 	// Get I2C device, BME280 I2C address is 0x76(136)
 	ioctl(file, I2C_SLAVE, 0x76);
+}
 
+void read_bme280() {
 	// Read 24 bytes of data from register(0x88)
 	char reg[1] = {0x88};
 	write(file, reg, 1);
@@ -194,11 +207,6 @@ void read_bme280()
 		humidity = 0.0;
 	}
 
-	// Output data to screen
-	//printf("Temperature in Celsius : %.2f C \n", cTemp);
-	//printf("Temperature in Fahrenheit : %.2f F \n", fTemp);
-	//printf("Pressure : %.2f hPa \n", pressure);
-	//printf("Relative Humidity : %.2f RH \n", humidity);
 	compensated_temperature_double = cTemp;
 	compensated_pressure_double = pressure;
 	compensated_humidity_double = humidity;
