@@ -1,6 +1,8 @@
 #include <iostream>
+#include <iomanip>
 
-#include "include/Fetch_BME280.hpp"
+//#include "include/Fetch_BME280.hpp"
+#include "include/rpi_bme280.h"
 
 /*#include <esp_err.h>
 #include <esp_log.h>
@@ -84,13 +86,13 @@ auto print_tty_pressure_sink = [](double val) {
 
 //######## THRESHOLD PRINTERS ##########
 auto print_temperature_sink = [](double val) {
-	ESP_LOGI(TEMP_STREAM_ID, "Temperature differs by %.5f °C", val);
+	std::cout << TEMP_STREAM_ID << " Temperature differs by " << std::setprecision(5) << val << " °C";
 };
 auto print_humidity_sink = [](double val) {
-	ESP_LOGI(HUM_STREAM_ID, "Humidity differs by %.5f %%", val);
+	std::cout << TEMP_STREAM_ID << " Humidity differs by " << std::setprecision(5) << val << " %%";
 };
 auto print_pressure_sink = [](double val) {
-	ESP_LOGI(PRES_STREAM_ID, "Pressure differs by %.5f hPa", val);
+	std::cout << TEMP_STREAM_ID << " Pressure differs by " << std::setprecision(5) << val << " hPa";
 };
 //######################################
 
@@ -129,13 +131,13 @@ public:
 };
 
 
-void main(void) {
-	connect_wifi();
+void app_main(void) {
+	//connect_wifi();
 
-	i2c_master_init();
+	//i2c_master_init();
 
 	// Use a priority of 10 to prevent preemption. (default Glasgow MicroStream thread has priority 5)
-	xTaskCreate(&task_bme280_normal_mode, "bme280_normal_mode",  2048, NULL, 10, NULL);
+	//xTaskCreate(&task_bme280_normal_mode, "bme280_normal_mode",  2048, NULL, 10, NULL);
 
 	BME280_Value_Pollable *humidity_pollable = new BME280_Value_Pollable(&compensated_humidity_double);
 	BME280_Value_Pollable *temperature_pollable = new BME280_Value_Pollable(&compensated_temperature_double);
@@ -185,13 +187,17 @@ void main(void) {
 	topology->run();
 }
 
+int main() {
+	app_main();
+	return 0;
+}
 
-esp_err_t event_handler(void *ctx, system_event_t *event) {
+/*esp_err_t event_handler(void *ctx, system_event_t *event) {
 	std::cout << "ERROR CAPTURED" << std::endl;
     return ESP_OK;
 }
 
-/*void connect_wifi(void) {
+void connect_wifi(void) {
     nvs_flash_init();
 	tcpip_adapter_init();
 	ESP_ERROR_CHECK( esp_event_loop_init(event_handler, NULL) );
