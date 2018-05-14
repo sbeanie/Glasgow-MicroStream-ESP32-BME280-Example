@@ -1,6 +1,6 @@
 [submodule "components/GU-Edgent"]
 	path = components/GU-Edgent
-	url = git@github.com:sbeanie/GU-Edgent.git
+	url = https://github.com/sbeanie/GU-Edgent.git
 [submodule "components/bme280/driver"]
 	path = components/bme280/driver
-	url = git@github.com:BoschSensortec/BME280_driver.git
+	url = https://github.com/BoschSensortec/BME280_driver.git
